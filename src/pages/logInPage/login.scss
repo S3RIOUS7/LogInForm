@@ -1,0 +1,47 @@
+.logInMenuMainContainer {
+  display: flex;
+  flex-direction: row;
+
+  .logInMenuContainer {
+    width: 436px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .forgotPassword {
+      margin: 0;
+      text-align: right;
+      width: 325px;
+      p {
+        margin: 0;
+      }
+    }
+    .Or {
+      font-family: Roboto;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 100%;
+      display: flex;
+      align-items: center;
+      width: 325px;
+      .line {
+        flex-grow: 1;
+        height: 0.5px;
+        background-color: black;
+        opacity: 0.3;
+      }
+    }
+    .titledescribe {
+      width: 325px;
+    }
+    .signUpQuestion {
+      margin-top: 30px;
+    }
+  }
+  .lodInMenuArt {
+    img {
+      height: 600px;
+    }
+  }
+}

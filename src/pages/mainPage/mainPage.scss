@@ -1,0 +1,34 @@
+.MainPage-container {
+  justify-content: start;
+  display: flex;
+  flex-direction: column;
+  width: 1280px;
+  height: 1080px;
+  .MainPageHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+  .SosialInfo {
+    display: flex;
+    flex-direction: row;
+  }
+  .ButtonsMenuContainer {
+    display: flex;
+    flex-direction: column;
+  }
+  .userContainer {
+    padding-left: 15px;
+  }
+  .AlbumsContainer {
+    padding-left: 15px;
+    .photo {
+      margin: 0 3px;
+      border-radius: 25%;
+    }
+  }
+  .PostsContainer {
+    padding-left: 15px;
+  }
+}
