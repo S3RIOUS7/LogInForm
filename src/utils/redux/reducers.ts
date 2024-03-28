@@ -97,6 +97,10 @@ const rootReducer = (state: RootState = initialState, action: Action): RootState
       return {
         ...initialState,
         section: 'LogInMenu',
+        auth: {
+          ...initialState.auth,
+          userData: [], // обнулить userData при выходе
+        },
       };
 
     case 'FETCH_DATA_FAILURE':
