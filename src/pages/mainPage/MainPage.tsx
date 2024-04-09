@@ -1,5 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
-
+import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/base/button/Button';
@@ -24,9 +23,8 @@ interface MainPageProps {
   setSection: (section: string) => void;
   photos: any[];
   fetchPhotosByAlbumId: (albumId: number) => void;
-  currentIndex: number;
-  setCurrentPhotoIndex: (index: number) => void;
   logout: () => void;
+  setCurrentPhotoIndex: (albumId: number, index: number) => void;
 }
 
 const MainPage: React.FC<MainPageProps> = ({
@@ -39,11 +37,23 @@ const MainPage: React.FC<MainPageProps> = ({
   posts,
   albums,
   photos,
-  currentIndex,
-  setCurrentPhotoIndex,
   logout,
+  setCurrentPhotoIndex,
 }) => {
   const navigate = useNavigate();
+  const [albumPhotoIndices, setAlbumPhotoIndices] = useState<{ [key: number]: number }>({});
+
+  useEffect(() => {
+    if (section === 'Albums' && albums.length > 0) {
+      albums.forEach((album) => {
+        fetchPhotosByAlbumId(album.id);
+        setAlbumPhotoIndices((prevState) => ({
+          ...prevState,
+          [album.id]: 0,
+        }));
+      });
+    }
+  }, [albums, fetchPhotosByAlbumId, section]);
 
   const handleLogout = useCallback(() => {
     navigate('/');
@@ -51,39 +61,43 @@ const MainPage: React.FC<MainPageProps> = ({
     console.log('Logging out...');
   }, [navigate, logout]);
 
-  const handleNextClick = useCallback(() => {
-    setCurrentPhotoIndex(currentIndex === photos.length - 1 ? 0 : currentIndex + 12);
-  }, [currentIndex, photos.length, setCurrentPhotoIndex]);
-
-  const handlePrevClick = useCallback(() => {
-    setCurrentPhotoIndex(currentIndex === 0 ? photos.length - 1 : currentIndex - 12);
-  }, [currentIndex, photos.length, setCurrentPhotoIndex]);
-
-  const handlePostsButtonClick = useCallback(
-    (userId: number) => {
-      fetchPostsByUserId(userId);
-      setSection('Posts');
+  const handleNextClick = useCallback(
+    (albumId: number) => {
+      const currentIndex = albumPhotoIndices[albumId] || 0;
+      setCurrentPhotoIndex(albumId, currentIndex + 12);
+      setAlbumPhotoIndices((prevState) => ({
+        ...prevState,
+        [albumId]: currentIndex + 12,
+      }));
     },
-    [fetchPostsByUserId, setSection],
+    [albumPhotoIndices, setCurrentPhotoIndex],
   );
 
-  const handleAlbumsButtonClick = useCallback(
-    (userId: number) => {
-      fetchAlbumsByUserId(userId);
-      setSection('Albums');
-      fetchPhotosByAlbumId(userId);
+  const handlePrevClick = useCallback(
+    (albumId: number) => {
+      const currentIndex = albumPhotoIndices[albumId] || 0;
+      setCurrentPhotoIndex(albumId, currentIndex - 12);
+      setAlbumPhotoIndices((prevState) => ({
+        ...prevState,
+        [albumId]: currentIndex - 12,
+      }));
     },
-    [fetchAlbumsByUserId, fetchPhotosByAlbumId, setSection],
+    [albumPhotoIndices, setCurrentPhotoIndex],
   );
+
+  const handlePostsButtonClick = useCallback(() => {
+    fetchPostsByUserId(userData[0].id);
+    setSection('Posts');
+  }, [fetchPostsByUserId, setSection, userData]);
+
+  const handleAlbumsButtonClick = useCallback(() => {
+    fetchAlbumsByUserId(userData[0].id);
+    setSection('Albums');
+  }, [fetchAlbumsByUserId, setSection, userData]);
 
   const handleMyProfileButtonClick = useCallback(() => {
     setSection('MyProfile');
   }, [setSection]);
-
-  const visiblePhotos = useMemo(
-    () => photos.slice(currentIndex, currentIndex + 12),
-    [photos, currentIndex],
-  );
 
   return (
     <div className="MainPage-container">
@@ -102,16 +116,8 @@ const MainPage: React.FC<MainPageProps> = ({
             children={'My profile'}
             onClick={handleMyProfileButtonClick}
           />
-          <Button
-            buttonStyle="buttonMenu"
-            children={'Albums'}
-            onClick={() => handleAlbumsButtonClick(userData[0].id)}
-          />
-          <Button
-            buttonStyle="buttonMenu"
-            children={'Posts'}
-            onClick={() => handlePostsButtonClick(userData[0].id)}
-          />
+          <Button buttonStyle="buttonMenu" children={'Albums'} onClick={handleAlbumsButtonClick} />
+          <Button buttonStyle="buttonMenu" children={'Posts'} onClick={handlePostsButtonClick} />
         </div>
 
         {section === 'Posts' && (
@@ -131,15 +137,17 @@ const MainPage: React.FC<MainPageProps> = ({
               <div className="album" key={index}>
                 <h3>{album.title}</h3>
                 <div className="photos">
-                  {visiblePhotos.map((photo, idx) => (
-                    <img className="photo" key={idx} src={photo.thumbnailUrl} alt={photo.title} />
-                  ))}
+                  {photos
+                    .slice(albumPhotoIndices[album.id], albumPhotoIndices[album.id] + 12)
+                    .map((photo, idx) => (
+                      <img className="photo" key={idx} src={photo.thumbnailUrl} alt={photo.title} />
+                    ))}
                 </div>
                 <div>
-                  <Button buttonStyle="secondary" onClick={handlePrevClick}>
+                  <Button buttonStyle="secondary" onClick={() => handlePrevClick(album.id)}>
                     Previous
                   </Button>
-                  <Button buttonStyle="secondary" onClick={handleNextClick}>
+                  <Button buttonStyle="secondary" onClick={() => handleNextClick(album.id)}>
                     Next
                   </Button>
                 </div>
@@ -175,15 +183,14 @@ const mapStateToProps = (state: RootState) => ({
   section: state.section || 'MyProfile',
   albums: state.albums || [],
   photos: state.photos || [],
-  currentIndex: state.currentIndex,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
   fetchPostsByUserId: (userId: number) => dispatch(fetchPostsByUserId(userId)),
-  setSection: (section: string) => dispatch(setSection(section)),
   fetchAlbumsByUserId: (userId: number) => dispatch(fetchAlbumsByUserId(userId)),
   fetchPhotosByAlbumId: (albumId: number) => dispatch(fetchPhotosByAlbumId(albumId)),
-  setCurrentPhotoIndex: (index: number) => dispatch(setCurrentPhotoIndex(index)),
+  setSection: (section: string) => dispatch(setSection(section)),
+  setCurrentPhotoIndex: (_albumId: number, index: number) => dispatch(setCurrentPhotoIndex(index)),
   logout: () => dispatch(logout()),
 });
 

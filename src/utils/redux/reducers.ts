@@ -99,7 +99,6 @@ const rootReducer = (state: RootState = initialState, action: Action): RootState
         section: 'LogInMenu',
         auth: {
           ...initialState.auth,
-          userData: [], // обнулить userData при выходе
         },
       };
 

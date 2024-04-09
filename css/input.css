@@ -1,0 +1,15 @@
+.input-container {
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.input-container .inputField {
+  height: 35px;
+  width: 315px;
+  border: 0.5px solid;
+  text-align: left;
+  font-size: 18px;
+  padding-left: 10px;
+  border-radius: 6px;
+}
+/*# sourceMappingURL=input.css.map */

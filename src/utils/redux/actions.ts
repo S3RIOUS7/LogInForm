@@ -43,27 +43,25 @@ export const logout = () => ({
   type: 'LOGOUT',
 });
 
-export const fetchPostsByUserId =
-  (userId: number) => async (dispatch: Dispatch, _getState: any) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/posts?userId=${userId}`);
-      const posts = await response.json();
-      dispatch(savePosts(posts));
-    } catch (error) {
-      console.error('Error fetching posts', error);
-    }
-  };
+export const fetchPostsByUserId = (userId: number) => async (dispatch: Dispatch) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/posts?userId=${userId}`);
+    const posts = await response.json();
+    dispatch(savePosts(posts));
+  } catch (error) {
+    console.error('Error fetching posts', error);
+  }
+};
 
-export const fetchAlbumsByUserId =
-  (userId: number) => async (dispatch: Dispatch, _getState: any) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/albums?userId=${userId}`);
-      const albums = await response.json();
-      dispatch(saveAlbums(albums));
-    } catch (error) {
-      console.error('Error fetching albums', error);
-    }
-  };
+export const fetchAlbumsByUserId = (userId: number) => async (dispatch: Dispatch) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/albums?userId=${userId}`);
+    const albums = await response.json();
+    dispatch(saveAlbums(albums));
+  } catch (error) {
+    console.error('Error fetching albums', error);
+  }
+};
 
 export const fetchPhotosByAlbumId =
   (albumId: number) => async (dispatch: Dispatch, _getState: any) => {
@@ -93,6 +91,7 @@ export const fetchDataByUsername =
       dispatch({ type: 'FETCH_DATA_FAILURE', payload: 'Error fetching user data' });
     }
   };
+
 export const setSection = (section: string) => ({
   type: 'SET_SECTION',
   payload: section,

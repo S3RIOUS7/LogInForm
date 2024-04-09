@@ -9,6 +9,8 @@ import {
   saveUserData,
   setUsername,
   setUsernameInput,
+  fetchAlbumsByUserId,
+  fetchPostsByUserId,
 } from '../../utils/redux/actions';
 import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../utils/redux/reducers';
@@ -20,6 +22,8 @@ interface LogInMenuProps {
   saveUserData: (userData: Array<any>) => void;
   userData?: Array<any>;
   usernameInput: string;
+  fetchAlbumsByUserId: (userId: number) => Promise<void>;
+  fetchPostsByUserId: (userId: number) => Promise<void>;
 }
 
 const LogInMenu: React.FC<LogInMenuProps> = ({
@@ -28,6 +32,8 @@ const LogInMenu: React.FC<LogInMenuProps> = ({
   fetchDataByUsername,
   userData,
   usernameInput,
+  fetchAlbumsByUserId,
+  fetchPostsByUserId,
 }) => {
   const navigate = useNavigate();
 
@@ -44,7 +50,12 @@ const LogInMenu: React.FC<LogInMenuProps> = ({
         (user: { username: string }) => user.username === usernameInput,
       );
 
-      if (userExists) {
+      if (userExists && userData && userData.length > 0) {
+        await Promise.all([
+          fetchAlbumsByUserId(userData[0].id),
+          fetchPostsByUserId(userData[0].id),
+        ]);
+
         navigate('/MainPage');
       } else {
         console.error('User not found');
@@ -52,7 +63,6 @@ const LogInMenu: React.FC<LogInMenuProps> = ({
     } catch (error) {
       console.error('Error handling sign in button click', error);
     }
-    console.log('User Data:', userData);
   };
 
   return (
@@ -103,6 +113,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchDataByUsername: (username: string) => dispatch(fetchDataByUsername(username) as any),
   saveUserData: (userData: Array<any>) => dispatch(saveUserData(userData)),
   setUsernameInput: (username: string) => dispatch(setUsernameInput(username)),
+  fetchAlbumsByUserId: (userId: number) => dispatch(fetchAlbumsByUserId(userId) as any),
+  fetchPostsByUserId: (userId: number) => dispatch(fetchPostsByUserId(userId) as any),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LogInMenu);
