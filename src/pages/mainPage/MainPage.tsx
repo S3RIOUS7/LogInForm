@@ -64,23 +64,28 @@ const MainPage: React.FC<MainPageProps> = ({
   const handleNextClick = useCallback(
     (albumId: number) => {
       const currentIndex = albumPhotoIndices[albumId] || 0;
-      setCurrentPhotoIndex(albumId, currentIndex + 12);
-      setAlbumPhotoIndices((prevState) => ({
-        ...prevState,
-        [albumId]: currentIndex + 12,
-      }));
+      const maxIndex = photos.length - 10;
+      if (currentIndex < maxIndex) {
+        setCurrentPhotoIndex(albumId, currentIndex + 10);
+        setAlbumPhotoIndices((prevState) => ({
+          ...prevState,
+          [albumId]: currentIndex + 10,
+        }));
+      }
     },
-    [albumPhotoIndices, setCurrentPhotoIndex],
+    [albumPhotoIndices, setCurrentPhotoIndex, photos],
   );
 
   const handlePrevClick = useCallback(
     (albumId: number) => {
       const currentIndex = albumPhotoIndices[albumId] || 0;
-      setCurrentPhotoIndex(albumId, currentIndex - 12);
-      setAlbumPhotoIndices((prevState) => ({
-        ...prevState,
-        [albumId]: currentIndex - 12,
-      }));
+      if (currentIndex > 0) {
+        setCurrentPhotoIndex(albumId, currentIndex - 10);
+        setAlbumPhotoIndices((prevState) => ({
+          ...prevState,
+          [albumId]: currentIndex - 10,
+        }));
+      }
     },
     [albumPhotoIndices, setCurrentPhotoIndex],
   );
@@ -138,12 +143,12 @@ const MainPage: React.FC<MainPageProps> = ({
                 <h3>{album.title}</h3>
                 <div className="photos">
                   {photos
-                    .slice(albumPhotoIndices[album.id], albumPhotoIndices[album.id] + 12)
+                    .slice(albumPhotoIndices[album.id], albumPhotoIndices[album.id] + 10)
                     .map((photo, idx) => (
                       <img className="photo" key={idx} src={photo.thumbnailUrl} alt={photo.title} />
                     ))}
                 </div>
-                <div>
+                <div className="button_container">
                   <Button buttonStyle="secondary" onClick={() => handlePrevClick(album.id)}>
                     Previous
                   </Button>
