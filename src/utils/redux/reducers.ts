@@ -1,15 +1,13 @@
 interface AuthState {
-  email: string;
-  password: string;
   username: string;
   usernameInput: string;
   userData?: Array<any>;
 }
 
 export interface RootState {
-  posts: { title: string; body: string }[];
-  albums: { title: string; body: string }[];
-  photos: { thumbnailUrl: string; title: string }[];
+  posts: { title: string; body: string }[]; // tipS
+  albums: { title: string; body: string }[]; // tipS
+  photos: { thumbnailUrl: string; title: string }[]; // tipS
   auth: AuthState;
   section: string;
   currentIndex: number;
@@ -17,8 +15,6 @@ export interface RootState {
 
 const initialState: RootState = {
   auth: {
-    email: '',
-    password: '',
     username: '',
     usernameInput: '',
   },
@@ -33,14 +29,6 @@ type Action = { type: string; payload: any };
 
 const rootReducer = (state: RootState = initialState, action: Action): RootState => {
   switch (action.type) {
-    case 'SET_PASSWORD':
-      return {
-        ...state,
-        auth: {
-          ...state.auth,
-          password: action.payload,
-        },
-      };
     case 'SET_USERNAME':
       return {
         ...state,

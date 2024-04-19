@@ -34,9 +34,9 @@ export const savePhotos = (photos: any[]) => ({
   type: 'SAVE_PHOTOS',
   payload: photos,
 });
-export const setCurrentPhotoIndex = (index: number) => ({
+export const setCurrentPhotoIndex = (albumId: number, index: number) => ({
   type: 'SET_CURRENT_PHOTO_INDEX',
-  payload: index,
+  payload: { albumId, index },
 });
 
 export const logout = () => ({
@@ -47,7 +47,7 @@ export const fetchPostsByUserId = (userId: number) => async (dispatch: Dispatch)
   try {
     const response = await fetch(`${API_BASE_URL}/posts?userId=${userId}`);
     const posts = await response.json();
-    dispatch(savePosts(posts));
+    dispatch({ type: 'SAVE_POSTS', payload: posts });
   } catch (error) {
     console.error('Error fetching posts', error);
   }
@@ -57,7 +57,7 @@ export const fetchAlbumsByUserId = (userId: number) => async (dispatch: Dispatch
   try {
     const response = await fetch(`${API_BASE_URL}/albums?userId=${userId}`);
     const albums = await response.json();
-    dispatch(saveAlbums(albums));
+    dispatch({ type: 'SAVE_ALBUMS', payload: albums });
   } catch (error) {
     console.error('Error fetching albums', error);
   }
@@ -68,7 +68,7 @@ export const fetchPhotosByAlbumId =
     try {
       const response = await fetch(`${API_BASE_URL}/photos?albumId=${albumId}`);
       const photos = await response.json();
-      dispatch(savePhotos(photos));
+      dispatch({ type: 'SAVE_PHOTOS', payload: photos });
     } catch (error) {
       console.error('Error fetching photos', error);
     }
@@ -81,7 +81,9 @@ export const fetchDataByUsername =
       const userData = await response.json();
 
       if (userData.length > 0) {
-        dispatch(saveUserData(userData));
+        localStorage.setItem('userData', JSON.stringify(userData));
+
+        dispatch({ type: 'SAVE_USER_DATA', payload: userData });
       } else {
         console.error('User not found');
         dispatch({ type: 'FETCH_DATA_FAILURE', payload: 'User not found' });
@@ -91,7 +93,6 @@ export const fetchDataByUsername =
       dispatch({ type: 'FETCH_DATA_FAILURE', payload: 'Error fetching user data' });
     }
   };
-
 export const setSection = (section: string) => ({
   type: 'SET_SECTION',
   payload: section,

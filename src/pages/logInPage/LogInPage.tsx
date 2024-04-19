@@ -2,58 +2,43 @@ import '../logInPage/login.scss';
 import logInArt from '../../assets/LoginArt.svg';
 import Input from '../../components/base/input/Input';
 import Button from '../../components/base/button/Button';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+
 import {
   fetchDataByUsername,
-  saveUserData,
   setUsername,
   setUsernameInput,
   fetchAlbumsByUserId,
   fetchPostsByUserId,
 } from '../../utils/redux/actions';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../utils/redux/reducers';
+import { AppDispatch } from '../../utils/redux/store';
 
-interface LogInMenuProps {
-  setUsernameInput: (username: string) => void;
-  setUsername: (username: string) => void;
-  fetchDataByUsername: (username: string) => void;
-  saveUserData: (userData: Array<any>) => void;
-  userData?: Array<any>;
+interface LogInPageProps {
+  userData: any;
   usernameInput: string;
-  fetchAlbumsByUserId: (userId: number) => Promise<void>;
-  fetchPostsByUserId: (userId: number) => Promise<void>;
 }
 
-const LogInMenu: React.FC<LogInMenuProps> = ({
-  setUsernameInput,
-  setUsername,
-  fetchDataByUsername,
-  userData,
-  usernameInput,
-  fetchAlbumsByUserId,
-  fetchPostsByUserId,
-}) => {
+const LogInPage: React.FC<LogInPageProps> = ({ userData }) => {
   const navigate = useNavigate();
 
-  const onUsernameInputChange = (value: string) => {
-    setUsernameInput(value);
-    setUsername(value);
-  };
+  const dispatch: AppDispatch = useDispatch();
+
+  const usernameInput = useSelector((state: RootState) => state.auth.usernameInput);
 
   const signInButtonClick = async () => {
     try {
-      await fetchDataByUsername(usernameInput);
+      dispatch(fetchDataByUsername(usernameInput));
 
-      const userExists = userData?.some(
+      const userExists = userData.some(
         (user: { username: string }) => user.username === usernameInput,
       );
 
-      if (userExists && userData && userData.length > 0) {
+      if (userExists) {
         await Promise.all([
-          fetchAlbumsByUserId(userData[0].id),
-          fetchPostsByUserId(userData[0].id),
+          dispatch(fetchAlbumsByUserId(userData[0].id)),
+          dispatch(fetchPostsByUserId(userData[0].id)),
         ]);
 
         navigate('/MainPage');
@@ -63,6 +48,10 @@ const LogInMenu: React.FC<LogInMenuProps> = ({
     } catch (error) {
       console.error('Error handling sign in button click', error);
     }
+  };
+  const inputChange = (value: string) => {
+    dispatch(setUsernameInput(value));
+    dispatch(setUsername(value));
   };
 
   return (
@@ -76,17 +65,13 @@ const LogInMenu: React.FC<LogInMenuProps> = ({
           </p>
         </div>
         <div className="inputname">
-          Email
+          User Name
           <Input
-            placeholder={'yourEmail@email.com'}
-            onChange={onUsernameInputChange}
+            placeholder={'Your Name'}
+            onChange={inputChange}
             value={usernameInput}
             type={'text'}
           />
-        </div>
-
-        <div className="forgotPassword">
-          <p>Forgot Password?</p>
         </div>
 
         <Button children={'Sign In'} onClick={signInButtonClick} buttonStyle="primary" />
@@ -103,18 +88,5 @@ const LogInMenu: React.FC<LogInMenuProps> = ({
     </div>
   );
 };
-const mapStateToProps = (state: RootState) => ({
-  userData: state.auth.userData || [],
-  usernameInput: state.auth.usernameInput,
-});
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setUsername: (username: string) => dispatch(setUsername(username)),
-  fetchDataByUsername: (username: string) => dispatch(fetchDataByUsername(username) as any),
-  saveUserData: (userData: Array<any>) => dispatch(saveUserData(userData)),
-  setUsernameInput: (username: string) => dispatch(setUsernameInput(username)),
-  fetchAlbumsByUserId: (userId: number) => dispatch(fetchAlbumsByUserId(userId) as any),
-  fetchPostsByUserId: (userId: number) => dispatch(fetchPostsByUserId(userId) as any),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(LogInMenu);
+export default LogInPage;

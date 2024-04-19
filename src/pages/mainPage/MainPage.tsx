@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
+
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/base/button/Button';
 import {
@@ -10,99 +11,82 @@ import {
   setCurrentPhotoIndex,
   logout,
 } from '../../utils/redux/actions';
-import { RootState } from '../../utils/redux/reducers';
+import { AppDispatch } from '../../utils/redux/store';
 import './mainPage.scss';
 
 interface MainPageProps {
   userData: any[];
-  fetchPostsByUserId: (userId: number) => void;
-  fetchAlbumsByUserId: (userId: number) => void;
   posts: any[];
   albums: any[];
   section: string;
-  setSection: (section: string) => void;
   photos: any[];
-  fetchPhotosByAlbumId: (albumId: number) => void;
-  logout: () => void;
-  setCurrentPhotoIndex: (albumId: number, index: number) => void;
 }
 
-const MainPage: React.FC<MainPageProps> = ({
-  userData,
-  fetchPostsByUserId,
-  fetchAlbumsByUserId,
-  fetchPhotosByAlbumId,
-  section,
-  setSection,
-  posts,
-  albums,
-  photos,
-  logout,
-  setCurrentPhotoIndex,
-}) => {
+const MainPage: React.FC<MainPageProps> = ({ userData, posts, albums, section, photos }) => {
   const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
   const [albumPhotoIndices, setAlbumPhotoIndices] = useState<{ [key: number]: number }>({});
 
   useEffect(() => {
     if (section === 'Albums' && albums.length > 0) {
       albums.forEach((album) => {
-        fetchPhotosByAlbumId(album.id);
+        dispatch(fetchPhotosByAlbumId(album.id));
         setAlbumPhotoIndices((prevState) => ({
           ...prevState,
           [album.id]: 0,
         }));
       });
     }
-  }, [albums, fetchPhotosByAlbumId, section]);
+  }, [albums, dispatch, section]);
 
   const handleLogout = useCallback(() => {
     navigate('/');
     logout();
     console.log('Logging out...');
-  }, [navigate, logout]);
+  }, [navigate, dispatch]);
 
   const handleNextClick = useCallback(
     (albumId: number) => {
       const currentIndex = albumPhotoIndices[albumId] || 0;
       const maxIndex = photos.length - 10;
       if (currentIndex < maxIndex) {
-        setCurrentPhotoIndex(albumId, currentIndex + 10);
+        dispatch(setCurrentPhotoIndex(albumId, currentIndex + 10));
         setAlbumPhotoIndices((prevState) => ({
           ...prevState,
           [albumId]: currentIndex + 10,
         }));
       }
     },
-    [albumPhotoIndices, setCurrentPhotoIndex, photos],
+    [albumPhotoIndices, dispatch, photos],
   );
 
   const handlePrevClick = useCallback(
     (albumId: number) => {
       const currentIndex = albumPhotoIndices[albumId] || 0;
       if (currentIndex > 0) {
-        setCurrentPhotoIndex(albumId, currentIndex - 10);
+        dispatch(setCurrentPhotoIndex(albumId, currentIndex - 10));
         setAlbumPhotoIndices((prevState) => ({
           ...prevState,
           [albumId]: currentIndex - 10,
         }));
       }
     },
-    [albumPhotoIndices, setCurrentPhotoIndex],
+    [albumPhotoIndices, dispatch],
   );
 
   const handlePostsButtonClick = useCallback(() => {
-    fetchPostsByUserId(userData[0].id);
-    setSection('Posts');
-  }, [fetchPostsByUserId, setSection, userData]);
+    dispatch(fetchPostsByUserId(userData[0].id));
+    dispatch(setSection('Posts'));
+  }, [dispatch, userData]);
 
   const handleAlbumsButtonClick = useCallback(() => {
-    fetchAlbumsByUserId(userData[0].id);
-    setSection('Albums');
-  }, [fetchAlbumsByUserId, setSection, userData]);
+    dispatch(fetchAlbumsByUserId(userData[0].id));
+    dispatch(setSection('Albums'));
+  }, [dispatch, userData]);
 
   const handleMyProfileButtonClick = useCallback(() => {
-    setSection('MyProfile');
-  }, [setSection]);
+    dispatch(setSection('MyProfile'));
+  }, [dispatch]);
 
   return (
     <div className="MainPage-container">
@@ -182,21 +166,4 @@ const MainPage: React.FC<MainPageProps> = ({
   );
 };
 
-const mapStateToProps = (state: RootState) => ({
-  userData: state.auth.userData || [],
-  posts: state.posts || [],
-  section: state.section || 'MyProfile',
-  albums: state.albums || [],
-  photos: state.photos || [],
-});
-
-const mapDispatchToProps = (dispatch: any) => ({
-  fetchPostsByUserId: (userId: number) => dispatch(fetchPostsByUserId(userId)),
-  fetchAlbumsByUserId: (userId: number) => dispatch(fetchAlbumsByUserId(userId)),
-  fetchPhotosByAlbumId: (albumId: number) => dispatch(fetchPhotosByAlbumId(albumId)),
-  setSection: (section: string) => dispatch(setSection(section)),
-  setCurrentPhotoIndex: (_albumId: number, index: number) => dispatch(setCurrentPhotoIndex(index)),
-  logout: () => dispatch(logout()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(MainPage);
+export default MainPage;

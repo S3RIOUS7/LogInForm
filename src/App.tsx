@@ -13,8 +13,11 @@ function App() {
         <div className="appContainer">
           <Routes>
             <Route path="/Homepage" element={<HomePage />} />
-            <Route path="/Mainpage" element={<MainPage />} />
-            <Route path="/" element={<LogInPage />} />
+            <Route
+              path="/Mainpage"
+              element={<MainPage userData={[]} posts={[]} albums={[]} section={''} photos={[]} />}
+            />
+            <Route path="/" element={<LogInPage usernameInput={''} userData={[]} />} />
           </Routes>
         </div>
       </Router>

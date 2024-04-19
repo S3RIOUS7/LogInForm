@@ -7,7 +7,7 @@ type HTMLInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onC
 interface InputProps extends HTMLInputProps {
   className?: string;
   value?: string;
-  onChange?: (valeu: string) => void;
+  onChange?: (value: string) => void;
   autofocus?: boolean;
 }
 export const Input = memo((props: InputProps) => {
