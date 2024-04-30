@@ -93,6 +93,10 @@ export const fetchDataByUsername =
       dispatch({ type: 'FETCH_DATA_FAILURE', payload: 'Error fetching user data' });
     }
   };
+export const setAlbumPhotoIndex = (albumId: number, index: number) => ({
+  type: 'SET_ALBUM_PHOTO_INDEX',
+  payload: { albumId, index },
+});
 export const setSection = (section: string) => ({
   type: 'SET_SECTION',
   payload: section,

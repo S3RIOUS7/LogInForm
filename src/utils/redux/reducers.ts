@@ -5,6 +5,7 @@ interface AuthState {
 }
 
 export interface RootState {
+  albumPhotoIndices: any;
   posts: { title: string; body: string }[]; // tipS
   albums: { title: string; body: string }[]; // tipS
   photos: { thumbnailUrl: string; title: string }[]; // tipS
@@ -23,6 +24,7 @@ const initialState: RootState = {
   section: 'MyProfile',
   photos: [],
   currentIndex: 0,
+  albumPhotoIndices: {},
 };
 
 type Action = { type: string; payload: any };
@@ -87,6 +89,15 @@ const rootReducer = (state: RootState = initialState, action: Action): RootState
         section: 'LogInMenu',
         auth: {
           ...initialState.auth,
+        },
+      };
+
+    case 'SET_ALBUM_PHOTO_INDEX':
+      return {
+        ...state,
+        albumPhotoIndices: {
+          ...state.albumPhotoIndices,
+          [action.payload.albumId]: action.payload.index,
         },
       };
 

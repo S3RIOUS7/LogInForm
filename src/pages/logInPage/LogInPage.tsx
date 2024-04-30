@@ -3,55 +3,48 @@ import logInArt from '../../assets/LoginArt.svg';
 import Input from '../../components/base/input/Input';
 import Button from '../../components/base/button/Button';
 
-import {
-  fetchDataByUsername,
-  setUsername,
-  setUsernameInput,
-  fetchAlbumsByUserId,
-  fetchPostsByUserId,
-} from '../../utils/redux/actions';
+import { fetchDataByUsername, setUsernameInput } from '../../utils/redux/actions';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../utils/redux/reducers';
 import { AppDispatch } from '../../utils/redux/store';
+import { useCallback } from 'react';
 
 interface LogInPageProps {
-  userData: any;
-  usernameInput: string;
+  userData: any[];
 }
 
-const LogInPage: React.FC<LogInPageProps> = ({ userData }) => {
+const LogInPage: React.FC<LogInPageProps> = () => {
   const navigate = useNavigate();
 
   const dispatch: AppDispatch = useDispatch();
 
   const usernameInput = useSelector((state: RootState) => state.auth.usernameInput);
-
-  const signInButtonClick = async () => {
+  const updatedUserData = useSelector((state: RootState) => state.auth.userData);
+  const signInButtonClick = useCallback(async () => {
     try {
-      dispatch(fetchDataByUsername(usernameInput));
+      await dispatch(fetchDataByUsername(usernameInput));
+      const userExists =
+        updatedUserData &&
+        updatedUserData.length > 0 &&
+        updatedUserData.some((user: any) => user.username === usernameInput);
 
-      const userExists = userData.some(
-        (user: { username: string }) => user.username === usernameInput,
-      );
-
+      console.log('User data:', updatedUserData);
+      console.log('Username input:', usernameInput);
+      console.log('User exists:', userExists);
       if (userExists) {
-        await Promise.all([
-          dispatch(fetchAlbumsByUserId(userData[0].id)),
-          dispatch(fetchPostsByUserId(userData[0].id)),
-        ]);
-
-        navigate('/MainPage');
+        localStorage.setItem('userData', JSON.stringify(updatedUserData));
+        navigate('/Mainpage');
       } else {
         console.error('User not found');
       }
     } catch (error) {
       console.error('Error handling sign in button click', error);
     }
-  };
+  }, [dispatch, navigate, usernameInput, updatedUserData]);
+
   const inputChange = (value: string) => {
     dispatch(setUsernameInput(value));
-    dispatch(setUsername(value));
   };
 
   return (
