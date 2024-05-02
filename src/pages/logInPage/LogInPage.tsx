@@ -3,7 +3,12 @@ import logInArt from '../../assets/LoginArt.svg';
 import Input from '../../components/base/input/Input';
 import Button from '../../components/base/button/Button';
 
-import { fetchDataByUsername, setUsernameInput } from '../../utils/redux/actions';
+import {
+  fetchAlbumsByUserId,
+  fetchDataByUsername,
+  fetchPostsByUserId,
+  setUsernameInput,
+} from '../../utils/redux/actions';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../utils/redux/reducers';
@@ -34,6 +39,11 @@ const LogInPage: React.FC<LogInPageProps> = () => {
       console.log('User exists:', userExists);
       if (userExists) {
         localStorage.setItem('userData', JSON.stringify(updatedUserData));
+        const userId = updatedUserData[0].id;
+
+        // Загрузка данных о постах и альбомах пользователя
+        dispatch(fetchPostsByUserId(userId));
+        dispatch(fetchAlbumsByUserId(userId));
         navigate('/Mainpage');
       } else {
         console.error('User not found');

@@ -7,11 +7,12 @@ interface AuthState {
 export interface RootState {
   albumPhotoIndices: any;
   posts: { title: string; body: string }[]; // tipS
-  albums: { title: string; body: string }[]; // tipS
-  photos: { thumbnailUrl: string; title: string }[]; // tipS
+  albums: { id: number; title: string; body: string }[];
+  photos: { id: number; thumbnailUrl: string; title: string }[];
   auth: AuthState;
   section: string;
   currentIndex: number;
+  randomPosts: any[];
 }
 
 const initialState: RootState = {
@@ -25,6 +26,7 @@ const initialState: RootState = {
   photos: [],
   currentIndex: 0,
   albumPhotoIndices: {},
+  randomPosts: [],
 };
 
 type Action = { type: string; payload: any };
@@ -99,6 +101,12 @@ const rootReducer = (state: RootState = initialState, action: Action): RootState
           ...state.albumPhotoIndices,
           [action.payload.albumId]: action.payload.index,
         },
+      };
+
+    case 'SAVE_RANDOM_POSTS':
+      return {
+        ...state,
+        randomPosts: action.payload,
       };
 
     case 'FETCH_DATA_FAILURE':

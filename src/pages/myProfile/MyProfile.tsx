@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-interface MyProfileProps {
-  userData: any[];
-}
-
-const MyProfile: React.FC<MyProfileProps> = ({ userData }) => {
+const MyProfile: React.FC = () => {
+  const [userData, setUserData] = useState<any[]>([]);
+  useEffect(() => {
+    const userDataFromLocalStorage = localStorage.getItem('userData');
+    if (userDataFromLocalStorage) {
+      setUserData(JSON.parse(userDataFromLocalStorage));
+    }
+  }, []);
   return (
     <div className="userProfileContainer">
       {userData.map((user, index) => (

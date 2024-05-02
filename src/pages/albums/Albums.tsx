@@ -5,16 +5,14 @@ import { fetchPhotosByAlbumId, setCurrentPhotoIndex } from '../../utils/redux/ac
 import Button from '../../components/base/button/Button';
 import { AppDispatch } from '../../utils/redux/store';
 
-interface AlbumsProps {
-  albums: any[];
-  photos: any[];
-}
-
-const Albums: React.FC<AlbumsProps> = ({ albums, photos }) => {
+const Albums: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
+  const albums = useSelector((state: RootState) => state.albums);
+  const photos = useSelector((state: RootState) => state.photos);
   const albumPhotoIndices = useSelector((state: RootState) => state.albumPhotoIndices);
 
   useEffect(() => {
+    // Получаем фотографии для каждого альбома при монтировании компонента
     albums.forEach((album) => {
       dispatch(fetchPhotosByAlbumId(album.id));
     });

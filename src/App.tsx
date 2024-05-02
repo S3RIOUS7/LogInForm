@@ -5,6 +5,7 @@ import './App.scss';
 import MainPage from './pages/mainPage/MainPage';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MyProfile from './pages/myProfile/MyProfile';
+import Albums from './pages/albums/Albums';
 
 function App() {
   return (
@@ -12,9 +13,11 @@ function App() {
       <Router>
         <div className="appContainer">
           <Routes>
-            <Route path="/Userprofile" element={<MyProfile userData={[]} />} />
+            <Route path="/Userprofile" element={<MyProfile />} />
             <Route path="/Mainpage" element={<MainPage userData={[]} />} />
             <Route path="/" element={<LogInPage userData={[]} />} />
+            <Route path="/Albums" element={<Albums />} />
+            <Route path="/Posts" element={<Albums />} />
           </Routes>
         </div>
       </Router>

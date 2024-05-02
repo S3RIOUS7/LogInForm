@@ -43,21 +43,40 @@ export const logout = () => ({
   type: 'LOGOUT',
 });
 
+export const saveRandomPosts = (posts: any[]) => ({
+  type: 'SAVE_RANDOM_POSTS',
+  payload: posts,
+});
+
+export const fetchRandomPosts = () => async (dispatch: Dispatch) => {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const posts = await response.json();
+    const randomPosts = posts.sort(() => Math.random() - 0.5).slice(0, 10); // Выбираем случайные 10 постов
+    dispatch(saveRandomPosts(randomPosts));
+  } catch (error) {
+    console.error('Error fetching random posts', error);
+  }
+};
+
 export const fetchPostsByUserId = (userId: number) => async (dispatch: Dispatch) => {
   try {
     const response = await fetch(`${API_BASE_URL}/posts?userId=${userId}`);
     const posts = await response.json();
     dispatch({ type: 'SAVE_POSTS', payload: posts });
+    // Сохранение данных о постах в localStorage
+    localStorage.setItem(`userPosts_${userId}`, JSON.stringify(posts));
   } catch (error) {
     console.error('Error fetching posts', error);
   }
 };
-
 export const fetchAlbumsByUserId = (userId: number) => async (dispatch: Dispatch) => {
   try {
     const response = await fetch(`${API_BASE_URL}/albums?userId=${userId}`);
     const albums = await response.json();
     dispatch({ type: 'SAVE_ALBUMS', payload: albums });
+    // Сохранение данных об альбомах в localStorage
+    localStorage.setItem(`userAlbums_${userId}`, JSON.stringify(albums));
   } catch (error) {
     console.error('Error fetching albums', error);
   }
