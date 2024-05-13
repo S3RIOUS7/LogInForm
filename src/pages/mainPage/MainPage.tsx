@@ -3,16 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/base/button/Button';
-import { fetchPostsByUserId, logout, fetchRandomPosts } from '../../utils/redux/actions';
+import { logout, fetchRandomPosts } from '../../utils/redux/actions';
 import { RootState } from '../../utils/redux/reducers';
 import { AppDispatch } from '../../utils/redux/store';
 import './mainPage.scss';
 
-interface MainPageProps {
-  userData: any[];
-}
+// interface MainPageProps {
+//   userData: any[];
+// }
 
-const MainPage: React.FC<MainPageProps> = ({ userData }) => {
+const MainPage: React.FC = ({}) => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const randomPosts = useSelector((state: RootState) => state.randomPosts);
@@ -21,21 +21,6 @@ const MainPage: React.FC<MainPageProps> = ({ userData }) => {
     dispatch(fetchRandomPosts());
   }, [dispatch]);
 
-  useEffect(() => {
-    // Вывод содержимого localStorage при загрузке MainPage
-    const userDataFromLocalStorage = localStorage.getItem('userData');
-    console.log('UserData from localStorage:', userDataFromLocalStorage);
-
-    // Если userData доступен, вы можете загрузить посты и альбомы этого пользователя из localStorage
-    if (userData && userData.length > 0) {
-      const userId = userData[0].id;
-      const userPosts = localStorage.getItem(`userPosts_${userId}`);
-      const userAlbums = localStorage.getItem(`userAlbums_${userId}`);
-      console.log('User Posts from localStorage:', userPosts);
-      console.log('User Albums from localStorage:', userAlbums);
-    }
-  }, [userData]);
-
   const handleLogout = useCallback(() => {
     navigate('/');
     logout();
@@ -43,8 +28,9 @@ const MainPage: React.FC<MainPageProps> = ({ userData }) => {
   }, [navigate, dispatch]);
 
   const handlePostsButtonClick = useCallback(() => {
-    dispatch(fetchPostsByUserId(userData[0].id));
-  }, [dispatch, userData]);
+    const storedUserData = JSON.parse(localStorage.getItem('userData') || '[]');
+    navigate('/Posts', { state: { userData: storedUserData } });
+  }, [navigate]);
 
   const handleAlbumsButtonClick = () => {
     const storedUserData = JSON.parse(localStorage.getItem('userData') || '[]');

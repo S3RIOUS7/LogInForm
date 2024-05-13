@@ -88,6 +88,7 @@ export const fetchPhotosByAlbumId =
       const response = await fetch(`${API_BASE_URL}/photos?albumId=${albumId}`);
       const photos = await response.json();
       dispatch({ type: 'SAVE_PHOTOS', payload: photos });
+      console.log('Photos:', photos);
     } catch (error) {
       console.error('Error fetching photos', error);
     }
@@ -119,4 +120,8 @@ export const setAlbumPhotoIndex = (albumId: number, index: number) => ({
 export const setSection = (section: string) => ({
   type: 'SET_SECTION',
   payload: section,
+});
+export const savePhotosByUserId = (userId: number, photos: any[]) => ({
+  type: 'SAVE_PHOTOS_BY_USER_ID',
+  payload: { userId, photos },
 });

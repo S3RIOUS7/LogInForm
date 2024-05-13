@@ -34,9 +34,6 @@ const LogInPage: React.FC<LogInPageProps> = () => {
         updatedUserData.length > 0 &&
         updatedUserData.some((user: any) => user.username === usernameInput);
 
-      console.log('User data:', updatedUserData);
-      console.log('Username input:', usernameInput);
-      console.log('User exists:', userExists);
       if (userExists) {
         localStorage.setItem('userData', JSON.stringify(updatedUserData));
         const userId = updatedUserData[0].id;

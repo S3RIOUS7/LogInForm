@@ -12,7 +12,6 @@ const Albums: React.FC = () => {
   const albumPhotoIndices = useSelector((state: RootState) => state.albumPhotoIndices);
 
   useEffect(() => {
-    // Получаем фотографии для каждого альбома при монтировании компонента
     albums.forEach((album) => {
       dispatch(fetchPhotosByAlbumId(album.id));
     });
@@ -20,7 +19,7 @@ const Albums: React.FC = () => {
 
   const handleNextClick = (albumId: number) => {
     const currentIndex = albumPhotoIndices[albumId] || 0;
-    const maxIndex = photos.length - 10;
+    const maxIndex = photos.filter((photo) => photo.albumId === albumId).length - 10;
     if (currentIndex < maxIndex) {
       dispatch(setCurrentPhotoIndex(albumId, currentIndex + 10));
     }
@@ -40,7 +39,7 @@ const Albums: React.FC = () => {
           <h3>{album.title}</h3>
           <div className="photos">
             {photos
-              .slice(albumPhotoIndices[album.id], albumPhotoIndices[album.id] + 10)
+              .filter((photo) => photo.albumId === album.id)
               .map((photo, idx) => (
                 <img className="photo" key={idx} src={photo.thumbnailUrl} alt={photo.title} />
               ))}

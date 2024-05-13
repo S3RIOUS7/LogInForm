@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
-interface PostsProps {
-  posts: any[];
-}
+const Posts: React.FC = () => {
+  const [userPosts, setUserPosts] = useState<any[]>([]);
+  const location = useLocation();
 
-const Posts: React.FC<PostsProps> = ({ posts }) => {
+  useEffect(() => {
+    const userData = location.state?.userData;
+    if (userData) {
+      const userPostsFromLocalStorage = localStorage.getItem(`userPosts_${userData[0].id}`);
+      if (userPostsFromLocalStorage) {
+        setUserPosts(JSON.parse(userPostsFromLocalStorage));
+      }
+    }
+  }, [location]);
+
   return (
     <div className="postsContainer">
-      {posts.map((post, index) => (
-        <div className="post" key={index}>
+      <h2>User Posts</h2>
+      {userPosts.map((post: any, index: number) => (
+        <div key={index} className="post">
           <h3>{post.title}</h3>
           <p>{post.body}</p>
         </div>

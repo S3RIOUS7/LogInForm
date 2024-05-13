@@ -6,6 +6,7 @@ import MainPage from './pages/mainPage/MainPage';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MyProfile from './pages/myProfile/MyProfile';
 import Albums from './pages/albums/Albums';
+import Posts from './pages/posts/Posts';
 
 function App() {
   return (
@@ -14,10 +15,10 @@ function App() {
         <div className="appContainer">
           <Routes>
             <Route path="/Userprofile" element={<MyProfile />} />
-            <Route path="/Mainpage" element={<MainPage userData={[]} />} />
+            <Route path="/Mainpage" element={<MainPage />} />
             <Route path="/" element={<LogInPage userData={[]} />} />
             <Route path="/Albums" element={<Albums />} />
-            <Route path="/Posts" element={<Albums />} />
+            <Route path="/Posts" element={<Posts />} />
           </Routes>
         </div>
       </Router>
