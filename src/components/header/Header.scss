@@ -1,0 +1,44 @@
+.MainPageHeader {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 25px;
+  .NamePage {
+    position: relative;
+    cursor: pointer;
+    padding-left: 10px;
+  }
+
+  .DropdownMenu {
+    margin-top: 25px;
+    visibility: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 1000;
+    flex-direction: column;
+    padding: 10px;
+    opacity: 0;
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s ease,
+      visibility 0.5s ease;
+    transform: translateY(-10px);
+  }
+
+  .NamePage:hover .DropdownMenu {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .DropdownMenu button {
+    margin: 5px 0;
+  }
+}

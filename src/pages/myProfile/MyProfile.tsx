@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Header from '../../components/header/Header';
 
 const MyProfile: React.FC = () => {
   const [userData, setUserData] = useState<any[]>([]);
@@ -10,6 +11,7 @@ const MyProfile: React.FC = () => {
   }, []);
   return (
     <div className="userProfileContainer">
+      <Header />
       {userData.map((user, index) => (
         <div className="userDetails" key={index}>
           <div className="name">Name: {user.name}</div>

@@ -37,8 +37,6 @@ const LogInPage: React.FC<LogInPageProps> = () => {
       if (userExists) {
         localStorage.setItem('userData', JSON.stringify(updatedUserData));
         const userId = updatedUserData[0].id;
-
-        // Загрузка данных о постах и альбомах пользователя
         dispatch(fetchPostsByUserId(userId));
         dispatch(fetchAlbumsByUserId(userId));
         navigate('/Mainpage');

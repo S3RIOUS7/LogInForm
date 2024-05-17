@@ -2,14 +2,9 @@
   justify-content: start;
   display: flex;
   flex-direction: column;
-  width: 1280px;
+  width: 980px;
   height: 1080px;
-  .MainPageHeader {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 30px;
-  }
+
   .SosialInfo {
     display: flex;
     flex-direction: row;
@@ -62,5 +57,8 @@
       font-size: 25px;
       text-align: center;
     }
+  }
+  .LogOut {
+    padding-right: 10px;
   }
 }

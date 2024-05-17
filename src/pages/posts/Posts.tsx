@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import Header from '../../components/header/Header';
+import './posts.scss';
 
 const Posts: React.FC = () => {
   const [userPosts, setUserPosts] = useState<any[]>([]);
@@ -17,6 +19,7 @@ const Posts: React.FC = () => {
 
   return (
     <div className="postsContainer">
+      <Header />
       <h2>User Posts</h2>
       {userPosts.map((post: any, index: number) => (
         <div key={index} className="post">

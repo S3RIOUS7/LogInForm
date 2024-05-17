@@ -4,6 +4,8 @@ import { RootState } from '../../utils/redux/reducers';
 import { fetchPhotosByAlbumId, setCurrentPhotoIndex } from '../../utils/redux/actions';
 import Button from '../../components/base/button/Button';
 import { AppDispatch } from '../../utils/redux/store';
+import Header from '../../components/header/Header';
+import './albums.scss';
 
 const Albums: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -34,6 +36,7 @@ const Albums: React.FC = () => {
 
   return (
     <div className="AlbumsContainer">
+      <Header />
       {albums.map((album, index) => (
         <div className="album" key={index}>
           <h3>{album.title}</h3>
