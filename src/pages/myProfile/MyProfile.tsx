@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../../components/header/Header';
+import './myProfile.scss';
 
 const MyProfile: React.FC = () => {
   const [userData, setUserData] = useState<any[]>([]);

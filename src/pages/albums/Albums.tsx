@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../utils/redux/reducers';
-import { fetchPhotosByAlbumId, setCurrentPhotoIndex } from '../../utils/redux/actions';
+import { fetchPhotosByAlbumId, setAlbumPhotoIndex } from '../../utils/redux/actions';
 import Button from '../../components/base/button/Button';
 import { AppDispatch } from '../../utils/redux/store';
 import Header from '../../components/header/Header';
@@ -23,14 +23,14 @@ const Albums: React.FC = () => {
     const currentIndex = albumPhotoIndices[albumId] || 0;
     const maxIndex = photos.filter((photo) => photo.albumId === albumId).length - 10;
     if (currentIndex < maxIndex) {
-      dispatch(setCurrentPhotoIndex(albumId, currentIndex + 10));
+      dispatch(setAlbumPhotoIndex(albumId, currentIndex + 10));
     }
   };
 
   const handlePrevClick = (albumId: number) => {
     const currentIndex = albumPhotoIndices[albumId] || 0;
     if (currentIndex > 0) {
-      dispatch(setCurrentPhotoIndex(albumId, currentIndex - 10));
+      dispatch(setAlbumPhotoIndex(albumId, currentIndex - 10));
     }
   };
 
@@ -43,6 +43,7 @@ const Albums: React.FC = () => {
           <div className="photos">
             {photos
               .filter((photo) => photo.albumId === album.id)
+              .slice(albumPhotoIndices[album.id] || 0, (albumPhotoIndices[album.id] || 0) + 10)
               .map((photo, idx) => (
                 <img className="photo" key={idx} src={photo.thumbnailUrl} alt={photo.title} />
               ))}

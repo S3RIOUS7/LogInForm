@@ -10,6 +10,7 @@ const Header: React.FC = () => {
   const dispatch = useDispatch();
 
   const handleLogout = useCallback(() => {
+    localStorage.clear();
     dispatch(logout());
     navigate('/');
     console.log('Logging out...');
@@ -30,16 +31,22 @@ const Header: React.FC = () => {
     navigate('/Posts', { state: { userData: storedUserData } });
   }, [navigate]);
 
+  const handleMainPageButtonClick = useCallback(() => {
+    navigate('/Mainpage');
+  }, [navigate]);
+
   return (
     <div className="MainPageHeader">
       <div className="NamePage">
         <h1>Your Profile</h1>
         <div className="DropdownMenu">
+          <Button buttonStyle="buttonMenu" children={'Main'} onClick={handleMainPageButtonClick} />
           <Button
             buttonStyle="buttonMenu"
             children={'My profile'}
             onClick={handleMyProfileButtonClick}
           />
+
           <Button buttonStyle="buttonMenu" children={'Albums'} onClick={handleAlbumsButtonClick} />
           <Button buttonStyle="buttonMenu" children={'Posts'} onClick={handlePostsButtonClick} />
         </div>

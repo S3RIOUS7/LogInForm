@@ -18,9 +18,7 @@ const MainPage: React.FC = ({}) => {
   return (
     <div className="MainPage-container">
       <Header />
-      <div className="SosialInfo">
-        <div className="ButtonsMenuContainer"></div>
-      </div>
+      <div className="SosialInfo"></div>
       <div className="RandomPostsContainer">
         <h2>Random Posts</h2>
         <ul>

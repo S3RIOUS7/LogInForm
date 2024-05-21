@@ -1,4 +1,24 @@
 .AlbumsContainer {
   width: 980px;
   height: 1080px;
+
+  .photos {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+  }
+
+  .photo {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .photo:hover {
+    transform: scale(1.05);
+  }
 }
